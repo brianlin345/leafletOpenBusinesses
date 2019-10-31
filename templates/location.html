@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  </head>
+  <body>
+
+  <script>
+    if (navigator.geolocation) {
+      console.log('a')
+      navigator.geolocation.getCurrentPosition(function(position) {
+
+        let pos = {lat: position.coords.latitude, lon: position.coords.longitude}
+
+        $.ajax({
+                type: "POST",
+                url: "/postmethod",
+                contentType: "application/json",
+                data: JSON.stringify({location: pos}),
+                dataType: "json",
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+      });
+    }
+
+    function logLocation(position) {
+      console.log(position.coords.latitude)
+      console.log(position.coords.longitude)
+    }
+
+  </script>
+
+  <a href = "./map">Map</a>
+  </body>
+</html>
