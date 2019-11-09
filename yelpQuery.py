@@ -6,6 +6,7 @@ import pandas as pd
 from datetime import datetime
 from geojson import Feature, FeatureCollection, Point, dump
 import time
+from operator import add
 
 
 
@@ -29,6 +30,7 @@ class yelpQuery:
         self.yelp_search()
         self.parse_businesses()
         self.write_businesses()
+        self.make_list()
         self.writeJSON()
 
     def yelp_search(self):
@@ -54,8 +56,20 @@ class yelpQuery:
 
     def write_businesses(self):
         self.businesses_df = pd.DataFrame.from_dict(self.business_dict)
+        self.num_businesses = self.businesses_df.shape[0]
         self.businesses_df.to_csv('{}.csv'.format(self.filename), encoding='utf-8', index=False, header = False)
         print('File {0}{1} written successfully'.format(self.filename, '.csv'))
+
+    def make_list(self):
+        self.detail_list = []
+        for index in range(0, self.num_businesses):
+            curr_list = [self.business_dict['name'][index]]
+            curr_list.append(self.calc_distance(self.business_dict['latitude'][index], self.business_dict['longitude'][index]))
+            self.detail_list.append(curr_list)
+
+    def calc_distance(self, lat1, lon1):
+        dist_degrees = pow(add(pow(self.latitude - lat1, 2), pow(self.longitude - lon1, 2)), 0.5)
+        return round(dist_degrees * 111139, 2)
 
     def writeJSON(self):
         features = []
@@ -79,7 +93,6 @@ class yelpQuery:
 radius = 5000 # meters
 lat = 0
 lon = 0
-#unix_time = 1571632240 # 6 pm Oct 26
 
 
 
@@ -99,16 +112,8 @@ def index():
     yq = yelpQuery(lat, lon, int(time.time()), radius)
     yq.yelp_main()
     print(datetime.fromtimestamp(yq.time))
-    print(yq.businesses_df)
-    return render_template('index.html', data = yq.json_file, latitude = yq.latitude, longitude = yq.longitude)
-
-
-@app.route('/list')
-def lst():
-    yq = yelpQuery(lat, lon, int(time.time()), radius)
-    yq.yelp_main()
-    return render_template('list.html', businesses = yq.business_dict['name'])
-
+    print(yq.detail_list)
+    return render_template('index.html', data = yq.json_file, latitude = yq.latitude, longitude = yq.longitude, businesses_list = yq.detail_list)
 
 @app.route('/')
 def location():
