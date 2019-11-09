@@ -25,10 +25,14 @@ html, body{
 
 }
 
-.businessDiv {
-  border-top: 1px solid gray;
-  border-right: 1px solid gray;
-  border-left: 1px solid gray;
-  border-bottom: 0px solid gray;
+tr.businessDiv {
+  border: 1px solid gray;
   width: 100%;
+  border-collapse: collapse;
+}
+
+td {
+  padding: 15px;
+  border-bottom: 1px solid gray;
+
 }

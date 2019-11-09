@@ -64,12 +64,15 @@ class yelpQuery:
         self.detail_list = []
         for index in range(0, self.num_businesses):
             curr_list = [self.business_dict['name'][index]]
+            curr_list.append(self.business_dict['url'][index])
             curr_list.append(self.calc_distance(self.business_dict['latitude'][index], self.business_dict['longitude'][index]))
             self.detail_list.append(curr_list)
 
+        self.detail_list.sort(key = lambda x: x[2])
+
     def calc_distance(self, lat1, lon1):
         dist_degrees = pow(add(pow(self.latitude - lat1, 2), pow(self.longitude - lon1, 2)), 0.5)
-        return round(dist_degrees * 111139, 2)
+        return round(dist_degrees * 111.139, 2)
 
     def writeJSON(self):
         features = []

@@ -21,9 +21,13 @@
         <table>
         {% for business in businesses_list %}
             <tr class = "businessDiv">
-              <td>{{ business[0] }}</td>
-              <td>Distance: {{ business[1] }}</td>
-            <tr>
+              <td>
+                <a href = "{{ business[1] }}" target="_blank">
+                  {{ business[0]}}
+                </a>
+              </td>
+              <td>Distance: {{ business[2] }} km</td>
+            </tr>
         {% endfor %}
         </table>
       </div>
@@ -49,7 +53,7 @@
       });
 
 
-      let map = L.map('businessMap').setView([{{ latitude }}, {{ longitude }}], 15);
+      let map = L.map('businessMap').setView([{{ latitude }}, {{ longitude }}], 17);
 
       businessPts.addTo(map);
       basemap.addTo(map);
