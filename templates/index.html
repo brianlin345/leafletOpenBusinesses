@@ -19,6 +19,8 @@
       <div class = "businessList">
         <h1>List of open businesses</h1>
         <table>
+        <th>Name</th>
+        <th>Distance</th>
         {% for business in businesses_list %}
             <tr class = "businessDiv">
               <td>
@@ -26,7 +28,7 @@
                   {{ business[0]}}
                 </a>
               </td>
-              <td>Distance: {{ business[2] }} km</td>
+              <td>{{ business[2] }} km</td>
             </tr>
         {% endfor %}
         </table>

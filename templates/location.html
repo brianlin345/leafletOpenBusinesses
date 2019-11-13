@@ -3,13 +3,21 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+    integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+    crossorigin=""></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/static/stylesDefault.css"/>
+    <script src = "/static/defaultMap.js"></script>
   </head>
   <body>
 
   <script>
     if (navigator.geolocation) {
-      console.log('a')
+
       navigator.geolocation.getCurrentPosition(function(position) {
 
         let pos = {lat: position.coords.latitude, lon: position.coords.longitude}
@@ -22,21 +30,20 @@
                 dataType: "json",
                 success: function(response) {
                     console.log(response);
+                    window.location.href = "./map";
                 },
                 error: function(err) {
                     console.log(err);
                 }
             });
       });
-    }
-
-    function logLocation(position) {
-      console.log(position.coords.latitude)
-      console.log(position.coords.longitude)
-    }
-
+    };
   </script>
-
-  <a href = "./map">Map</a>
+  <div class = "parent1">
+    <div class = "header">
+      <h1>Home</h1>
+    </div>
+    <div id = "defaultMap"></div>
+  </div>
   </body>
 </html>

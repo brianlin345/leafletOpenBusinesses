@@ -1,4 +1,4 @@
-from flask import Flask, current_app, render_template, request, jsonify
+from flask import Flask, current_app, render_template, request, jsonify, redirect, url_for
 
 import requests
 import json, csv
@@ -79,10 +79,9 @@ class yelpQuery:
         with open('{}.csv'.format(self.filename), newline='') as csvfile:
             reader = csv.reader(csvfile, delimiter=',')
             for id, name, latitude, longitude, url in reader:
-                latitude, longitude = map(float, (latitude, longitude))
                 features.append(
                     Feature(
-                        geometry = Point((longitude, latitude)),
+                        geometry = Point((float(longitude), float(latitude))),
                         properties = {
                             'name': name,
                             'url': url
@@ -111,11 +110,11 @@ def postmethod():
 
 
 @app.route('/map')
-def index():
+def map():
     yq = yelpQuery(lat, lon, int(time.time()), radius)
     yq.yelp_main()
     print(datetime.fromtimestamp(yq.time))
-    print(yq.detail_list)
+    #print(yq.detail_list)
     return render_template('index.html', data = yq.json_file, latitude = yq.latitude, longitude = yq.longitude, businesses_list = yq.detail_list)
 
 @app.route('/')
