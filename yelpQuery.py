@@ -16,7 +16,7 @@ app = Flask(__name__)
 class yelpQuery:
     yelp_url = "https://api.yelp.com/v3/businesses/search"
     api_key = "Ph5ToEVanaZhUmnCWJDAWFnlCah55sgnz3r91I-sC6ObZI8KCAyXDtI4cAqs7hoUg0GgquEJCnHhMBBoXfe6P2uPgafPpa5GkDLAGDtbeliu2JzileqOOHdPAN6zXXYx"
-    business_keys = ['id', 'name', 'latitude', 'longitude', 'url']
+    business_keys = ['id', 'name', 'latitude', 'longitude', 'price', 'rating', 'url']
 
     def __init__(self, lat, lon, time, radius = 1000, filename='businesses'):
         self.latitude = lat
@@ -43,6 +43,7 @@ class yelpQuery:
 
     def parse_businesses(self):
         self.business_dict = {business_key:[] for business_key in yelpQuery.business_keys}
+        print(self.business_dict)
 
         businesses = json.loads(self.req.text)
         businesses_parsed = businesses['businesses']
@@ -52,7 +53,16 @@ class yelpQuery:
             self.business_dict['name'].append(business['name'])
             self.business_dict['latitude'].append(business['coordinates']['latitude'])
             self.business_dict['longitude'].append(business['coordinates']['longitude'])
+            self.checkAttribute('price', 'price', business)
+            self.checkAttribute('rating', 'rating', business)
             self.business_dict['url'].append(business['url'])
+        print(self.business_dict['price'])
+
+    def checkAttribute(self, dict_key, api_key, api_entry):
+        if dict_key in api_entry:
+            self.business_dict[dict_key].append(api_entry[api_key])
+        else:
+            self.business_dict[dict_key].append('N/A')
 
     def write_businesses(self):
         self.businesses_df = pd.DataFrame.from_dict(self.business_dict)
@@ -66,6 +76,8 @@ class yelpQuery:
             curr_list = [self.business_dict['name'][index]]
             curr_list.append(self.business_dict['url'][index])
             curr_list.append(self.calc_distance(self.business_dict['latitude'][index], self.business_dict['longitude'][index]))
+            curr_list.append(self.business_dict['rating'][index])
+            curr_list.append(self.business_dict['price'][index])
             self.detail_list.append(curr_list)
 
         self.detail_list.sort(key = lambda x: x[2])
@@ -78,13 +90,15 @@ class yelpQuery:
         features = []
         with open('{}.csv'.format(self.filename), newline='') as csvfile:
             reader = csv.reader(csvfile, delimiter=',')
-            for id, name, latitude, longitude, url in reader:
+            for id, name, latitude, longitude, price, rating, url in reader:
                 features.append(
                     Feature(
                         geometry = Point((float(longitude), float(latitude))),
                         properties = {
                             'name': name,
-                            'url': url
+                            'rating': rating,
+                            'price': price,
+                            'url': url,
                         }
                     )
                 )

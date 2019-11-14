@@ -21,6 +21,8 @@
         <table>
         <th>Name</th>
         <th>Distance</th>
+        <th>Rating</th>
+        <th>Price</th>
         {% for business in businesses_list %}
             <tr class = "businessDiv">
               <td>
@@ -29,6 +31,8 @@
                 </a>
               </td>
               <td>{{ business[2] }} km</td>
+              <td>{{ business[3] }} stars</td>
+              <td>{{ business[4] }}</td>
             </tr>
         {% endfor %}
         </table>
@@ -49,7 +53,10 @@
 
       let businessPts = L.geoJson(data, {
           onEachFeature: function(feature, layer) {
-            layer.bindPopup('<h1>' + feature.properties.name + '</h1>'+"<a href='" + feature.properties.url + "'target=\"_blank\">Yelp link</a>");
+            layer.bindPopup('<h1>' + feature.properties.name + '</h1>'+
+            '<p> Rating: ' + feature.properties.rating + ' stars</p>' +
+            '<p> Price: ' + feature.properties.price + '</p>' +
+            "<a href='" + feature.properties.url + "'target=\"_blank\">Yelp link</a>");
           }
 
       });
