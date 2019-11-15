@@ -7,32 +7,34 @@
     integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
     crossorigin=""/>
     <link rel="stylesheet" href="/static/styles.css"/>
-   <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
-   integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
-   crossorigin=""></script>
-   <script src = "https://code.jquery.com/jquery-3.4.1.js"></script>
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+    integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+    crossorigin=""></script>
+    <script src = "https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   </head>
   <body>
     <div class = "parent1">
       <div id = "businessMap"></div>
       <div class = "businessList">
-        <h1>List of open businesses</h1>
+        <h1 class = "listTitle">Open Businesses</h1>
         <table>
-        <th>Name</th>
-        <th>Distance</th>
-        <th>Rating</th>
-        <th>Price</th>
+        <tr class = "businessHeader">
+          <th class = "businessHeaderCell">Name</th>
+          <th class = "businessHeaderCell">Distance</th>
+          <th class = "businessHeaderCell">Rating</th>
+          <th class = "businessHeaderCell">Price</th>
+        </tr>
         {% for business in businesses_list %}
-            <tr class = "businessDiv">
-              <td>
+            <tr class = "businessInfo">
+              <td class = "businessInfoCell">
                 <a href = "{{ business[1] }}" target="_blank">
                   {{ business[0]}}
                 </a>
               </td>
-              <td>{{ business[2] }} km</td>
-              <td>{{ business[3] }} stars</td>
-              <td>{{ business[4] }}</td>
+              <td class = "businessInfoCell">{{ business[2] }} km</td>
+              <td class = "businessInfoCell">{{ business[3] }} stars</td>
+              <td class = "businessInfoCell">{{ business[4] }}</td>
             </tr>
         {% endfor %}
         </table>

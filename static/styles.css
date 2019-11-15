@@ -22,18 +22,60 @@ html, body{
   width: 35%;
   display: flex;
   flex-direction: column;
+}
 
+.listTitle {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 700;
+  text-align: center;
+  color: #003F87;
+  height: 100px;
+  padding: 20px;
+}
+
+
+a:link {
+  color: #0099CC;
+}
+
+a:visited {
+  color: #0099CC;
 }
 
 table {
   border-collapse: collapse;
+  background-color: #F5F5F5;
 }
 
-table tr.businessDiv {
+table tr.businessInfo {
   border: 1px solid grey;
+}
+
+tr.businessInfo:hover {
+  background-color: #D3D3D3;
+}
+
+th {
+  width: 25%;
+  padding: 15px;
+}
+
+th.businessHeaderCell {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 550;
+  font-size: 150%;
+  text-align: center;
+  color: #0D4F8B;
+  border-top: 2px solid grey;
+  border-bottom: 2px solid grey;
 }
 
 td {
   padding: 12px;
-  width: 50%
+  width: 25%
+}
+
+td.businessInfoCell {
+  font-family: 'Archivo', sans-serif;
+  text-align: center;
 }
