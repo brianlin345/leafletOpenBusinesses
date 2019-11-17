@@ -14,10 +14,59 @@ html, body{
 }
 
 .header {
-  height: 15%;
+  height: 20%;
+  border: 4px solid grey;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerText {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 800;
+  color: #003F87;
+  padding: 20px;
+  font-size: 300%;
+}
+
+.content {
+  display:flex;
+  height: 80%
 }
 
 #defaultMap {
   flex: 1;
-  height: 80%;
+  height: 100%;
+}
+
+.generalInfo {
+  width: 35%;
+  height: 100%;
+  background-color: #F5F5F5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-left: 4px solid grey;
+  border-right: 4px solid grey;
+  border-bottom: 4px solid grey;
+  box-sizing: border-box;
+}
+
+.generalInfoText {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 400;
+  color: #36648B;
+  padding: 50px;
+  font-size: 125%;
+  line-height: 50px;
+}
+
+.instructionText {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 400;
+  color: #4682B4;
+  padding: 50px;
+  font-size: 150%;
+  line-height: 50px;
 }

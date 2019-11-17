@@ -17,6 +17,7 @@ class yelpQuery:
     yelp_url = "https://api.yelp.com/v3/businesses/search"
     api_key = "Ph5ToEVanaZhUmnCWJDAWFnlCah55sgnz3r91I-sC6ObZI8KCAyXDtI4cAqs7hoUg0GgquEJCnHhMBBoXfe6P2uPgafPpa5GkDLAGDtbeliu2JzileqOOHdPAN6zXXYx"
     business_keys = ['id', 'name', 'latitude', 'longitude', 'price', 'rating', 'url']
+    max_searches = 5
 
     def __init__(self, lat, lon, time, radius = 1000, filename='businesses'):
         self.latitude = lat
@@ -25,10 +26,14 @@ class yelpQuery:
         self.time = time
         self.filename = filename
         self.headers = {'Authorization': 'Bearer %s' % yelpQuery.api_key}
+        self.business_dict = {business_key:[] for business_key in yelpQuery.business_keys}
+        self.seen_businesses = 1
+        self.search_count = 0
+
 
     def yelp_main(self):
         self.yelp_search()
-        self.parse_businesses()
+        self.batch_yelp_search()
         self.write_businesses()
         self.make_list()
         self.writeJSON()
@@ -42,27 +47,35 @@ class yelpQuery:
             print('JSON status code:{}'.format(self.req.status_code))
 
     def parse_businesses(self):
-        self.business_dict = {business_key:[] for business_key in yelpQuery.business_keys}
-        print(self.business_dict)
 
         businesses = json.loads(self.req.text)
         businesses_parsed = businesses['businesses']
+        self.seen_businesses = 0
 
         for business in businesses_parsed:
-            self.business_dict['id'].append(business['id'])
-            self.business_dict['name'].append(business['name'])
-            self.business_dict['latitude'].append(business['coordinates']['latitude'])
-            self.business_dict['longitude'].append(business['coordinates']['longitude'])
-            self.checkAttribute('price', 'price', business)
-            self.checkAttribute('rating', 'rating', business)
-            self.business_dict['url'].append(business['url'])
-        print(self.business_dict['price'])
+            if business['id'] not in self.business_dict['id']:
+                self.seen_businesses += 1
+                self.business_dict['id'].append(business['id'])
+                self.business_dict['name'].append(business['name'])
+                self.business_dict['latitude'].append(business['coordinates']['latitude'])
+                self.business_dict['longitude'].append(business['coordinates']['longitude'])
+                self.checkAttribute('price', 'price', business)
+                self.checkAttribute('rating', 'rating', business)
+                self.business_dict['url'].append(business['url'])
+
+        self.search_count += 1
 
     def checkAttribute(self, dict_key, api_key, api_entry):
         if dict_key in api_entry:
             self.business_dict[dict_key].append(api_entry[api_key])
         else:
             self.business_dict[dict_key].append('N/A')
+
+    def batch_yelp_search(self):
+        while self.seen_businesses and self.search_count < yelpQuery.max_searches:
+            print("iter")
+            self.yelp_search()
+            self.parse_businesses()
 
     def write_businesses(self):
         self.businesses_df = pd.DataFrame.from_dict(self.business_dict)
