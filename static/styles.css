@@ -79,3 +79,26 @@ td.businessInfoCell {
   font-family: 'Archivo', sans-serif;
   text-align: center;
 }
+
+.mapHeader {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 500%;
+  font-size: 150%;
+  text-align: center;
+  color: #0D4F8B;
+}
+
+.mapInfo {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 400%;
+  font-size: 110%;
+  text-align: center;
+  color: #787878;
+}
+
+.mapLink {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 400%;
+  font-size: 120%;
+  text-align: center;
+}

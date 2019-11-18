@@ -56,14 +56,13 @@
 
       let businessPts = L.geoJson(data, {
           onEachFeature: function(feature, layer) {
-            layer.bindPopup('<h1>' + feature.properties.name + '</h1>'+
-            '<p> Rating: ' + feature.properties.rating + ' stars</p>' +
-            '<p> Price: ' + feature.properties.price + '</p>' +
-            "<a href='" + feature.properties.url + "'target=\"_blank\">Yelp link</a>");
+            layer.bindPopup('<h1 class = \"mapHeader\">' + feature.properties.name + '</h1>'+
+            '<p class = \"mapInfo\"> Rating: ' + feature.properties.rating + ' stars</p>' +
+            '<p class = \"mapInfo\"> Price: ' + feature.properties.price + '</p>' +
+            "<p class = \"mapLink\"><a href='" + feature.properties.url + "'target=\"_blank\">Yelp link</a></p>");
           }
 
       });
-
 
       let map = L.map('businessMap').setView([{{ latitude }}, {{ longitude }}], 17);
 
