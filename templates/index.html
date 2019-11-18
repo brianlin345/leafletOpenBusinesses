@@ -12,18 +12,19 @@
     crossorigin=""></script>
     <script src = "https://code.jquery.com/jquery-3.4.1.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src = "/static/tableSort.js"></script>
   </head>
   <body>
     <div class = "parent1">
       <div id = "businessMap"></div>
       <div class = "businessList">
         <h1 class = "listTitle">Open Businesses</h1>
-        <table>
+        <table id = "businessTable">
         <tr class = "businessHeader">
-          <th class = "businessHeaderCell">Name</th>
-          <th class = "businessHeaderCell">Distance</th>
-          <th class = "businessHeaderCell">Rating</th>
-          <th class = "businessHeaderCell">Price</th>
+          <th class = "businessHeaderCell" onclick = "sortTableNumeric(0)">Name</th>
+          <th class = "businessHeaderCell" onclick = "sortTableNumeric(1)">Distance</th>
+          <th class = "businessHeaderCell" onclick = "sortTableNumeric(2)">Rating</th>
+          <th class = "businessHeaderCell" onclick = "sortTableNumeric(3)">Price</th>
         </tr>
         {% for business in businesses_list %}
             <tr class = "businessInfo">

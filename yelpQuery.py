@@ -93,7 +93,7 @@ class yelpQuery:
             curr_list.append(self.business_dict['price'][index])
             self.detail_list.append(curr_list)
 
-        self.detail_list.sort(key = lambda x: x[2])
+        #self.detail_list.sort(key = lambda x: x[2])
 
     def calc_distance(self, lat1, lon1):
         dist_degrees = pow(add(pow(self.latitude - lat1, 2), pow(self.longitude - lon1, 2)), 0.5)
