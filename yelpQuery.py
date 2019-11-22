@@ -9,21 +9,18 @@ import time
 from operator import add
 
 
-
-app = Flask(__name__)
-
-
 class yelpQuery:
     yelp_url = "https://api.yelp.com/v3/businesses/search"
     api_key = "Ph5ToEVanaZhUmnCWJDAWFnlCah55sgnz3r91I-sC6ObZI8KCAyXDtI4cAqs7hoUg0GgquEJCnHhMBBoXfe6P2uPgafPpa5GkDLAGDtbeliu2JzileqOOHdPAN6zXXYx"
     business_keys = ['id', 'name', 'latitude', 'longitude', 'price', 'rating', 'url']
     max_searches = 3
+    radius = 2000
 
-    def __init__(self, lat, lon, time, radius = 1000, filename='businesses'):
+    def __init__(self, lat, lon, time, filename='businesses'):
         """Sets location and API request parameters"""
         self.latitude = lat
         self.longitude = lon
-        self.radius = radius
+        self.radius = yelpQuery.radius
         self.time = time
         self.filename = filename
         self.headers = {'Authorization': 'Bearer %s' % yelpQuery.api_key}
@@ -51,8 +48,7 @@ class yelpQuery:
 
     def parse_businesses(self):
         """Parses JSON from Yelp API - separates into needed variables and prepares variables for later API requests"""
-        businesses = json.loads(self.req.text)
-        businesses_parsed = businesses['businesses']
+        businesses_parsed = self.businesses['businesses']
         offset_change = 0
 
         for business in businesses_parsed:
@@ -81,15 +77,19 @@ class yelpQuery:
 
     def check_distance(self, dist):
         """Checks if location is within the specified radius"""
-        return dist <= radius_km
+        return dist <= self.radius / 1000
 
     def batch_yelp_search(self):
         """Runs multiple Yelp API Queries up to a specified maximum"""
         while self.search_count < yelpQuery.max_searches:
             print("ITER")
             self.yelp_search()
-            self.parse_businesses()
-            self.search_count += 1
+            self.businesses = json.loads(self.req.text)
+            if 'businesses' in self.businesses:
+                self.parse_businesses()
+                self.search_count += 1
+            else:
+                break
 
     def write_businesses(self):
         """Writes dictionary of individual variables into a Pandas dataframe and .csv file"""
@@ -114,6 +114,9 @@ class yelpQuery:
         dist_degrees = pow(add(pow(self.latitude - lat1, 2), pow(self.longitude - lon1, 2)), 0.5)
         return round(dist_degrees * 111.139, 2)
 
+    def set_radius(self, new_radius):
+        yelpQuery.radius = new_radius
+
     def writeJSON(self):
         """Writes csv file of business information to a JSON object to be passed to frontend"""
         features = []
@@ -135,12 +138,27 @@ class yelpQuery:
         self.collection = FeatureCollection(features)
         self.json_file = json.dumps(self.collection)
 
-radius = 2000
-radius_km = radius / 1000
 lat = 0
 lon = 0
 
+yq = None
 
+app = Flask(__name__)
+
+
+@app.route('/map')
+def map():
+    """Page with open businesses near user location"""
+    global yq
+    yq = yelpQuery(lat, lon, int(time.time()))
+    yq.yelp_main()
+    print(datetime.fromtimestamp(yq.time))
+    return render_template('index.html', data = yq.json_file, latitude = yq.latitude, longitude = yq.longitude, businesses_list = yq.detail_list)
+
+@app.route('/')
+def location():
+    """Homepage with prompt for user location and general information"""
+    return render_template('location.html')
 
 @app.route('/postmethod', methods = ['POST'])
 def postmethod():
@@ -152,16 +170,8 @@ def postmethod():
     print(lat, lon)
     return jsonify(data)
 
-
-@app.route('/map')
-def map():
-    """Page with open businesses near user location"""
-    yq = yelpQuery(lat, lon, int(time.time()), radius)
-    yq.yelp_main()
-    print(datetime.fromtimestamp(yq.time))
-    return render_template('index.html', data = yq.json_file, latitude = yq.latitude, longitude = yq.longitude, businesses_list = yq.detail_list)
-
-@app.route('/')
-def location():
-    """Homepage with prompt for user location and general information"""
-    return render_template('location.html')
+@app.route('/customized', methods = ['GET'])
+def get_method():
+    """Handles GET requests for map modification"""
+    yq.set_radius(int(request.args.get("distanceSelect")))
+    return redirect('/map')

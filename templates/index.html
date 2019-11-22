@@ -16,7 +16,21 @@
   </head>
   <body>
     <div class = "parent1">
-      <div id = "businessMap"></div>
+      <div class = businessMapParent>
+        <div id = "businessMap"></div>
+        <div class = "mapCustom">
+          <p class = "mapCustomTitle">Map Customization</p>
+          <form method = "GET" action = "/customized">
+            <select name = "distanceSelect" class = "distanceSelect">
+              <option value=1000>1 km</option>
+              <option value=2000>2 km</option>
+              <option value=5000>5 km</option>
+              <option value=10000>10 km</option>
+            </select>
+            <button type="submit" value="Submit" class = "distanceSelectButton">Change search distance</button>
+          </form>
+        </div>
+      </div>
       <div class = "businessList">
         <h1 class = "listTitle">Open Businesses</h1>
         <table id = "businessTable">

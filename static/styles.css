@@ -12,9 +12,56 @@ html, body{
   height: 100%;
 }
 
-#businessMap {
+.businessMapParent {
+  display: flex;
+  flex-direction: column;
   flex: 1;
   order: 1;
+}
+
+#businessMap {
+  flex: 1;
+  order: 0;
+}
+
+.mapCustom {
+  height: 15%;
+  text-align: center;
+}
+
+.mapCustomTitle {
+  font-family: 'Archivo', sans-serif;
+  font-weight: 700;
+  font-size: 150%;
+  text-align: center;
+  color: #003F87;
+  height: 33%;
+  padding: 2px;
+}
+
+.distanceSelect {
+  font-family: 'Archivo', sans-serif;
+  font-size: 150%
+  margin: 5px;
+  width: 150px;
+  padding: 5px;
+  border: 1px solid grey;
+  height: 50px;
+  text-align: center;
+  background-color: #F5F5F5;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.distanceSelectButton {
+  font-family: 'Archivo', sans-serif;
+  background-color: #F5F5F5;
+  border: 1 px solid grey;
+  color: #0D4F8B;
+  padding: 5px;
+  text-align: center;
+  font-size: 100%;
 }
 
 .businessList {
