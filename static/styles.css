@@ -27,26 +27,27 @@ html, body{
 .mapCustom {
   height: 15%;
   text-align: center;
+  border-top: 2px solid grey;
 }
 
 .mapCustomTitle {
   font-family: 'Archivo', sans-serif;
   font-weight: 700;
-  font-size: 150%;
+  font-size: 125%;
   text-align: center;
   color: #003F87;
   height: 33%;
-  padding: 2px;
+  padding: 5px;
+  padding-top: 10px;
 }
 
 .distanceSelect {
   font-family: 'Archivo', sans-serif;
-  font-size: 150%
-  margin: 5px;
+  font-size: 100%;
   width: 150px;
-  padding: 5px;
+  padding: 7px;
   border: 1px solid grey;
-  height: 50px;
+  height: 40px;
   text-align: center;
   background-color: #F5F5F5;
   -webkit-appearance: none;
@@ -95,7 +96,8 @@ table {
 }
 
 table tr.businessInfo {
-  border: 1px solid grey;
+  border-top: 1px solid grey;
+  border-bottom: 1px solid grey;
 }
 
 tr.businessInfo:hover {
