@@ -2,7 +2,6 @@ from flask import Flask, current_app, render_template, request, jsonify, redirec
 
 import requests
 import json, csv
-import pandas as pd
 from datetime import datetime
 from geojson import Feature, FeatureCollection, Point, dump
 import time
@@ -15,6 +14,7 @@ class yelpQuery:
     business_keys = ['id', 'name', 'latitude', 'longitude', 'price', 'rating', 'url']
     max_searches = 3
     radius = 2000
+    bucket_name = "leaflet-open-businesses-bucket"
 
     def __init__(self, lat, lon, time, filename='businesses'):
         """Sets location and API request parameters"""
@@ -28,14 +28,16 @@ class yelpQuery:
         self.search_count = 0
         self.search_offset = 0
 
+        #self.client = storage.Client()
+        #self.bucket = client.get_bucket(yelpQuery.bucket_name)
+
 
     def yelp_main(self):
         """Controls full Yelp API request sequence"""
         self.yelp_search()
         self.batch_yelp_search()
-        self.write_businesses()
         self.make_list()
-        self.writeJSON()
+        self.writeJSON_direct()
 
     def yelp_search(self):
         """Makes Yelp API Request with handling for request errors"""
@@ -91,11 +93,6 @@ class yelpQuery:
             else:
                 break
 
-    def write_businesses(self):
-        """Writes dictionary of individual variables into a Pandas dataframe and .csv file"""
-        self.businesses_df = pd.DataFrame.from_dict(self.business_dict)
-        self.businesses_df.to_csv('{}.csv'.format(self.filename), encoding='utf-8', index=False, header = False)
-
     def make_list(self):
         """Creates a nested list of attributes where each sublist is the attribute set for an individual business"""
         self.detail_list = []
@@ -117,24 +114,20 @@ class yelpQuery:
     def set_radius(self, new_radius):
         yelpQuery.radius = new_radius
 
-    def writeJSON(self):
-        """Writes csv file of business information to a JSON object to be passed to frontend"""
+    def writeJSON_direct(self):
         features = []
-        with open('{}.csv'.format(self.filename), newline='') as csvfile:
-            reader = csv.reader(csvfile, delimiter=',')
-            for id, name, latitude, longitude, price, rating, url in reader:
-                features.append(
-                    Feature(
-                        geometry = Point((float(longitude), float(latitude))),
-                        properties = {
-                            'name': name,
-                            'rating': rating,
-                            'price': price,
-                            'url': url,
-                        }
-                    )
+        for index in range(self.num_businesses):
+            features.append(
+                Feature(
+                    geometry = Point((float(self.business_dict['longitude'][index]), float(self.business_dict['latitude'][index]))),
+                    properties = {
+                        'name': self.business_dict['name'][index],
+                        'rating': self.business_dict['rating'][index],
+                        'price': self.business_dict['price'][index],
+                        'url': self.business_dict['url'][index],
+                    }
                 )
-
+            )
         self.collection = FeatureCollection(features)
         self.json_file = json.dumps(self.collection)
 
