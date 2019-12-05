@@ -20,14 +20,26 @@
         <div id = "businessMap"></div>
         <div class = "mapCustom">
           <p class = "mapCustomTitle">Map Customization</p>
-          <form method = "GET" action = "/customized">
-            <select name = "distanceSelect" class = "distanceSelect">
-              <option value=1000>1 km</option>
-              <option value=2000>2 km</option>
-              <option value=5000>5 km</option>
-              <option value=10000>10 km</option>
-            </select>
-            <button type="submit" value="Submit" class = "distanceSelectButton">Change search distance</button>
+          <form method = "GET" action = "/customized", class = "mapCustomForm">
+            <div class = mapCustomSelectDiv>
+              <h5 class = mapCustomCategory>Max search distance</h5>
+              <select name = "distanceSelect" class = "mapCustomSelect">
+                <option value=1000>1 km</option>
+                <option value=2000>2 km(Default)</option>
+                <option value=5000>5 km</option>
+                <option value=10000>10 km</option>
+              </select>
+            </div>
+            <div class = mapCustomSelectDiv>
+              <h5 class = mapCustomCategory>Max search results</h5>
+              <select name = "resultsNumSelect" class = "mapCustomSelect">
+                <option value=1>50</option>
+                <option value=2>100</option>
+                <option value=3>150(Default)</option>
+                <option value=4>200</option>
+              </select>
+            </div>
+            <button type="submit" value="Submit" class = "mapCustomButton">Customize Map</button>
           </form>
         </div>
       </div>
