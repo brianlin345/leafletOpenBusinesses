@@ -15,11 +15,13 @@ class yelpQuery:
     max_searches = 3
     radius = 2000
     bucket_name = "leaflet-open-businesses-bucket"
+    lat = 0
+    lon = 0
 
-    def __init__(self, lat, lon, time, filename='businesses'):
+    def __init__(self, time, filename='businesses'):
         """Sets location and API request parameters"""
-        self.latitude = lat
-        self.longitude = lon
+        self.latitude = yelpQuery.lat
+        self.longitude = yelpQuery.lon
         self.radius = yelpQuery.radius
         self.time = time
         self.filename = filename
@@ -131,9 +133,6 @@ class yelpQuery:
         self.collection = FeatureCollection(features)
         self.json_file = json.dumps(self.collection)
 
-lat = 0
-lon = 0
-
 yq = None
 
 app = Flask(__name__)
@@ -143,7 +142,7 @@ app = Flask(__name__)
 def map():
     """Page with open businesses near user location"""
     global yq
-    yq = yelpQuery(lat, lon, int(time.time()))
+    yq = yelpQuery(int(time.time()))
     yq.yelp_main()
     print(datetime.fromtimestamp(yq.time))
     return render_template('index.html', data = yq.json_file, latitude = yq.latitude, longitude = yq.longitude, businesses_list = yq.detail_list)
@@ -157,14 +156,13 @@ def location():
 def postmethod():
     """Handles POST requests for location data"""
     data = request.get_json()
-    global lat, lon
-    lat = data['location']['lat']
-    lon = data['location']['lon']
-    print(lat, lon)
+    yelpQuery.lat = data['location']['lat']
+    yelpQuery.lon = data['location']['lon']
     return jsonify(data)
 
 @app.route('/customized', methods = ['GET'])
 def get_method():
     """Handles GET requests for map modification"""
     yq.set_radius(int(request.args.get("distanceSelect")))
+    yq.max_searches = int(request.args.get("resultsNumSelect"))
     return redirect('/map')
