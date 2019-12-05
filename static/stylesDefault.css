@@ -22,7 +22,7 @@ html, body{
 }
 
 .headerText {
-  font-family: 'Archivo', sans-serif;
+  font-family: 'Muli', sans-serif;
   font-weight: 600;
   color: #003F87;
   padding: 20px;
@@ -54,16 +54,16 @@ html, body{
 }
 
 .generalInfoText {
-  font-family: 'Archivo', sans-serif;
+  font-family: 'Muli', sans-serif;
   font-weight: 400;
   color: #36648B;
   padding: 50px;
-  font-size: 125%;
+  font-size: 135%;
   line-height: 50px;
 }
 
 .instructionText {
-  font-family: 'Archivo', sans-serif;
+  font-family: 'Muli', sans-serif;
   font-weight: 400;
   color: #4682B4;
   padding: 50px;

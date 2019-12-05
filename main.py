@@ -30,10 +30,6 @@ class yelpQuery:
         self.search_count = 0
         self.search_offset = 0
 
-        #self.client = storage.Client()
-        #self.bucket = client.get_bucket(yelpQuery.bucket_name)
-
-
     def yelp_main(self):
         """Controls full Yelp API request sequence"""
         self.yelp_search()
@@ -116,6 +112,9 @@ class yelpQuery:
     def set_radius(self, new_radius):
         yelpQuery.radius = new_radius
 
+    def set_searches(self, new_searches):
+        yelpQuery.max_searches = new_searches
+
     def writeJSON_direct(self):
         features = []
         for index in range(self.num_businesses):
@@ -162,7 +161,8 @@ def postmethod():
 
 @app.route('/customized', methods = ['GET'])
 def get_method():
-    """Handles GET requests for map modification"""
+    """Handles GET requests for search modification"""
     yq.set_radius(int(request.args.get("distanceSelect")))
-    yq.max_searches = int(request.args.get("resultsNumSelect"))
+    yq.set_searches(int(request.args.get("resultsNumSelect")))
+    print(yelpQuery.max_searches)
     return redirect('/map')
