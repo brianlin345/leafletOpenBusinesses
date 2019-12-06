@@ -28,11 +28,11 @@ class yelpQuery:
         self.headers = {'Authorization': 'Bearer %s' % yelpQuery.api_key}
         self.business_dict = {business_key:[] for business_key in yelpQuery.business_keys}
         self.search_count = 0
+        self.num_businesses = 0
         self.search_offset = 0
 
     def yelp_main(self):
         """Controls full Yelp API request sequence"""
-        self.yelp_search()
         self.batch_yelp_search()
         self.make_list()
         self.writeJSON_direct()
@@ -44,7 +44,7 @@ class yelpQuery:
         if self.req.status_code == 200:
             return self.req
         else:
-            print('JSON status code:{}'.format(self.req.status_code))
+            print('JSON status code:{}'.format(self.req))
 
     def parse_businesses(self):
         """Parses JSON from Yelp API - separates into needed variables and prepares variables for later API requests"""
@@ -65,7 +65,6 @@ class yelpQuery:
 
         self.num_businesses = len(self.business_dict['id'])
         self.search_offset += offset_change
-        print(self.search_offset)
 
 
     def check_attribute(self, dict_key, api_key, api_entry):
@@ -82,14 +81,11 @@ class yelpQuery:
     def batch_yelp_search(self):
         """Runs multiple Yelp API Queries up to a specified maximum"""
         while self.search_count < yelpQuery.max_searches:
-            print("ITER")
             self.yelp_search()
             self.businesses = json.loads(self.req.text)
             if 'businesses' in self.businesses:
                 self.parse_businesses()
-                self.search_count += 1
-            else:
-                break
+            self.search_count += 1
 
     def make_list(self):
         """Creates a nested list of attributes where each sublist is the attribute set for an individual business"""
@@ -110,12 +106,20 @@ class yelpQuery:
         return round(dist_degrees * 111.139, 2)
 
     def set_radius(self, new_radius):
+        """Setter for search radius"""
         yelpQuery.radius = new_radius
 
     def set_searches(self, new_searches):
+        """Setter for number of searches"""
         yelpQuery.max_searches = new_searches
 
+    def set_location(self, new_lat, new_lon):
+        """Setter for user location"""
+        yelpQuery.lat = new_lat
+        yelpQuery.lon = new_lon
+
     def writeJSON_direct(self):
+        """Writes JSON for map directly from collected Yelp API data"""
         features = []
         for index in range(self.num_businesses):
             features.append(
@@ -132,7 +136,7 @@ class yelpQuery:
         self.collection = FeatureCollection(features)
         self.json_file = json.dumps(self.collection)
 
-yq = None
+yq = yelpQuery(0)
 
 app = Flask(__name__)
 
@@ -155,8 +159,7 @@ def location():
 def postmethod():
     """Handles POST requests for location data"""
     data = request.get_json()
-    yelpQuery.lat = data['location']['lat']
-    yelpQuery.lon = data['location']['lon']
+    yq.set_location(data['location']['lat'], data['location']['lon'])
     return jsonify(data)
 
 @app.route('/customized', methods = ['GET'])
@@ -164,5 +167,4 @@ def get_method():
     """Handles GET requests for search modification"""
     yq.set_radius(int(request.args.get("distanceSelect")))
     yq.set_searches(int(request.args.get("resultsNumSelect")))
-    print(yelpQuery.max_searches)
     return redirect('/map')
